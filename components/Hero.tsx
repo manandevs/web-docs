@@ -1,11 +1,11 @@
-import { ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight, FileCode, Palette } from "lucide-react";
 import React from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 
 const Hero = () => {
   return (
-    <section className="relative w-full overflow-x-hidden overflow-y-visible flex flex-col justify-center items-center py-16">
+    <section className="relative w-full flex flex-col justify-center items-center py-16">
       {/* Linear Glow */}
       <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-4xl h-40 opacity-50 pointer-events-none">
         <div className="absolute inset-0 bg-linear-to-r from-red-500/50 via-red-500/60 to-red-500/50 blur-[80px] rounded-xl mix-blend-screen" />
@@ -23,7 +23,7 @@ const Hero = () => {
         </Badge>
 
         {/* Headline */}
-        <h1 className="text-4xl md:text-7xl font-it-weralionis tracking-tight text-white mb-4">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-it-weralionis tracking-tight text-white mb-4">
           Learn Web Development
           <br />
           <span className="text-red-400">Step by Step</span>
