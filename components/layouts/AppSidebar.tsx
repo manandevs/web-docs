@@ -28,13 +28,13 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
     <Sidebar
       side={side}
       collapsible="offcanvas"
-      className="bg-black text-white border-gray-800 px-6"
+      className="bg-black text-white border-gray-800 pl-3"
     >
       <SidebarHeader className="bg-black text-white pt-20">
         {header}
       </SidebarHeader>
 
-      <SidebarContent className="bg-black text-white">
+      <SidebarContent className="bg-black text-white pl-4">
         {content ?? children}
       </SidebarContent>
 
