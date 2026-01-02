@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import Layout from "@/components/layouts/Layout";
 
 // Google Fonts
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={cn("antialiased bg-black text-white")}>
         <SidebarProvider className="flex flex-col justify-center items-center">
           <Header />
-          {children}
+          <Layout>
+            {children}
+          </Layout>
         </SidebarProvider>
       </body>
     </html>
