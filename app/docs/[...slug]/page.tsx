@@ -4,11 +4,10 @@ import { docsData } from "@/lib/docs";
 import { Button } from "@/components/ui/button";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string[];
-  };
+  }>;
 }
-
 export default async function DocPage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -42,14 +41,12 @@ export default async function DocPage({ params }: PageProps) {
         </p>
       </div>
 
-      <div className="h-px w-full bg-linear-to-r from-transparent via-white/10 to-transparent mb-12" />
-
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12" />
       {/* 2. Key Takeaways (Styled like the Hero Cards) */}
       <div className="grid gap-8 mb-12">
         <div className="group relative p-6 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/4 transition-colors overflow-hidden">
           {/* Subtle gradient border effect */}
-          <div className="absolute inset-0 bg-linear-to-br from-red-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-          
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />          
           <h3 className="relative text-lg font-it-weralionis text-white mb-4 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
             Core Concepts

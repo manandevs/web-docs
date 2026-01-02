@@ -30,9 +30,8 @@ const SidebarNavHeader = () => {
 
       <div className="flex flex-col gap-1.5">
         {items.map(({ src, title, desc, href }) => {
-          // Check if the current URL starts with this card's href
-          const isActive = pathname.startsWith(href);
-
+          // Check if the current URL matches exactly or is a sub-path
+          const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
             <Link key={title} href={href} className="block group">
               <div
