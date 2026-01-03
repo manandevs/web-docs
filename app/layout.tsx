@@ -2,14 +2,23 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-import Header from "@/components/Header";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import Layout from "@/components/layouts/Layout";
 
-// Google Fonts
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+import { cn } from "@/lib/utils";
+import { SidebarProvider } from "@/components/ui/sidebar";
+
+import Header from "@/components/Header";
+import Layout from "@/components/layouts/Layout";
+import NextThemeProvider from "@/components/providers";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"]
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"]
+});
 
 const itWeralionis = localFont({
   src: "./ITWeralionis.otf",
@@ -24,14 +33,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn(geistSans.variable, geistMono.variable, itWeralionis.variable)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      suppressContentEditableWarning
+      className={cn(geistSans.variable, geistMono.variable, itWeralionis.variable)}
+    >
       <body className={cn("antialiased bg-black text-white")}>
-        <SidebarProvider className="flex flex-col justify-center items-center">
-          <Header />
-          <Layout>
-            {children}
-          </Layout>
-        </SidebarProvider>
+        <NextThemeProvider>
+          <SidebarProvider className="flex flex-col justify-center items-center">
+            <Header />
+            <Layout>
+              {children}
+            </Layout>
+          </SidebarProvider>
+        </NextThemeProvider>
       </body>
     </html>
   );

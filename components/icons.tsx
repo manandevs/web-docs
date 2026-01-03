@@ -74,10 +74,9 @@ export const Icons = {
       <path d="M87.3 24.3H63V0l24.3 24.3z" fill="#006634" />
       <path fill="#FFF" d="M16 28h55.3v66.8H16z" />
       <path fill="#0F9D58" d="M25 40h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9z" />
-      <path fill="#006634" d="M25 58h9v9h-9zm14 58h9v9h-9zm14 58h9v9h-9zm14 58h9v9h-9z" />
+      <path fill="#006634" d="M25 58h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9z" />
     </svg>
   ),
-
   // UI Icons
   sun: SunMedium,
   moon: Moon,
