@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 import AppSidebar from "@/components/layouts/AppSidebar";
 import SidebarNavHeader from "./sidebar-nav/Header";
 import SidebarNavContent from "./sidebar-nav/Content";
+import SidebarNavFooter from "./sidebar-nav/Footer";
 
 interface LayoutProps {
   children?: ReactNode;
@@ -16,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         side="left"
         header={<SidebarNavHeader />}
         content={<SidebarNavContent />}
-        footer={<p className="text-gray-400 text-xs">Left Sidebar Footer</p>}
+        footer={<SidebarNavFooter />}
       />
 
       {/* Main Content */}

@@ -1,7 +1,4 @@
-import { DocsData } from "@/types";
-
-export const docsData: DocsData = {
-  // HTML MODULE
+export const docsData = {
   html: {
     intro: {
       title: "Introduction to HTML",

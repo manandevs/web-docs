@@ -12,6 +12,12 @@ const items = [
     href: "/docs/html",
   },
   {
+    src: "/images/css.png",
+    title: "CSS Styling",
+    desc: "Design, layout, and responsiveness",
+    href: "/docs/css",
+  },
+  {
     src: "/images/git.png",
     title: "Git & Version Control",
     desc: "Track changes & collaborate",

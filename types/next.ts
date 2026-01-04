@@ -1,6 +1,5 @@
 // types/next.ts (App Router)
 
-import { Metadata } from "next";
 import { SearchParams } from "./utils";
 
 export type GenerateMetadataProps = {

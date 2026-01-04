@@ -6,13 +6,10 @@ export interface GoogleSheetConfig {
   apiKey?: string;
 }
 
-// Represents a raw row from Google Sheets API
 export type RawSheetRow = string[];
 
-// Represents a row converted to a keyed object
 export type SheetRowData = Record<string, string | number | boolean | null>;
 
-// Specific domain model for a project/resource fetched from Sheets
 export interface ProjectData {
   id: string;
   name: string;

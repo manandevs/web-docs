@@ -1,7 +1,7 @@
 import { PenLine } from "lucide-react";
 import Logo from "./Logo";
-import { Button } from "./ui/button";
-import { SidebarTrigger } from "./ui/sidebar";
+import { Button } from "../ui/button";
+import { SidebarTrigger } from "../ui/sidebar";
 
 const Header = () => {
   return (

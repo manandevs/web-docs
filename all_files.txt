@@ -1,2251 +1,0 @@
-=== D:\web-docs\.env ===
-NEXT_PUBLIC_APP_URL=
-
-=== D:\web-docs\.gitignore ===
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-all_files.txt
-list-files.js
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-
-=== D:\web-docs\app\docs\layout.tsx ===
-export default function DocsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex min-h-screen bg-black selection:bg-red-500/30">
-      {/* Background Glow Effect (Optional Global Glow) */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full mix-blend-screen" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-red-500/5 blur-[120px] rounded-full mix-blend-screen" />
-      </div>
-
-      {/* Main Content Area */}
-      <main className="flex-1 relative z-10 p-8 md:p-16 overflow-y-auto">
-        <div className="max-w-7xl w-full mx-auto">
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-}
-
-=== D:\web-docs\app\docs\[...slug]\page.tsx ===
-import { notFound } from "next/navigation";
-import { ChevronRight, Terminal, Copy, Check } from "lucide-react";
-import { docsData } from "@/lib/docs";
-import { Button } from "@/components/ui/button";
-
-interface PageProps {
-  params: Promise<{
-    slug: string[];
-  }>;
-}
-export default async function DocPage({ params }: PageProps) {
-  const { slug } = await params;
-
-  const moduleName = slug[0];
-  const topicName = slug[1] || "intro";
-
-  const moduleData = docsData[moduleName];
-  
-  if (!moduleData || !moduleData[topicName]) {
-    return notFound();
-  }
-
-  const content = moduleData[topicName];
-
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
-      <div className="relative mb-12">
-        <div className="absolute -top-10 -left-10 w-32 h-32 bg-red-500/20 blur-[60px] rounded-full pointer-events-none" />
-        <div className="relative flex items-center gap-2 text-xs font-medium text-zinc-500 mb-6 uppercase tracking-widest font-it-weralionis">
-          <span className="text-zinc-400">{moduleName}</span>
-          <ChevronRight size={12} />
-          <span className="text-red-400">{topicName}</span>
-        </div>
-
-        <h1 className="relative text-5xl md:text-6xl font-it-weralionis tracking-tight text-white mb-6">
-          {content.title}
-        </h1>
-        <p className="text-xl text-zinc-400 leading-relaxed max-w-2xl font-light">
-          {content.description}
-        </p>
-      </div>
-
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12" />
-      {/* 2. Key Takeaways (Styled like the Hero Cards) */}
-      <div className="grid gap-8 mb-12">
-        <div className="group relative p-6 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/4 transition-colors overflow-hidden">
-          {/* Subtle gradient border effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />          
-          <h3 className="relative text-lg font-it-weralionis text-white mb-4 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-            Core Concepts
-          </h3>
-          
-          <ul className="relative space-y-3">
-            {content.points.map((point, i) => (
-              <li key={i} className="flex items-start gap-3 text-zinc-400">
-                 <Check className="w-5 h-5 text-zinc-600 shrink-0 mt-0.5" />
-                 <span className="text-sm md:text-base leading-relaxed">{point}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* 3. Code Block (Terminal Style) */}
-      {content.code && (
-        <div className="mb-12">
-           <div className="flex items-center justify-between px-1 mb-3">
-            <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest font-it-weralionis flex items-center gap-2">
-              <Terminal size={14} className="text-red-400" />
-              Example Usage
-            </span>
-          </div>
-
-          <div className="relative rounded-xl border border-white/10 bg-[#050505] shadow-2xl overflow-hidden group">
-            {/* Window Controls */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-              <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-              <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-              <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-              <div className="ml-auto text-[10px] text-zinc-600 font-mono">bash / html</div>
-            </div>
-
-            {/* The Code */}
-            <div className="p-6 overflow-x-auto">
-              <pre className="font-mono text-sm leading-7 text-zinc-300">
-                <code>{content.code}</code>
-              </pre>
-            </div>
-
-            {/* Hover Effects */}
-            <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/5 pointer-events-none" />
-          </div>
-        </div>
-      )}
-
-      {/* 4. Footer Navigation */}
-      <div className="flex justify-between items-center pt-10 border-t border-white/5">
-        <Button variant="ghost" className="text-zinc-500 hover:text-white hover:bg-white/5">
-          &larr; Previous
-        </Button>
-        <Button variant="ghost" className="text-zinc-500 hover:text-white hover:bg-white/5">
-          Next Lesson &rarr;
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-=== D:\web-docs\app\globals.css ===
-@import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-it-weralionis: var(--font-it-weralionis);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
-}
-
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-
-=== D:\web-docs\app\ITWeralionis.otf ===
-OTTO  �  PCFF �p�    �DSIG     2x   GDEF  =  �   GPOSZ@xg    ^GSUB    2h   OS/2j�54  @   `cmap�  �  vhead,��I   �   6hhea��     $hmtx}��  �   �maxp =P   8   name�%��  �  post     �          �s��_<� �    �լ�    ���  ���             ��8  "                    =  P  =   �  ��   ���  � 1            �  'P  B        XXXX @   z��8  �       ��      2     �  �   �  �   � � � E � � � � � �  � Y � � Y �  ,  y ( y ^ � " � g h � & % &   >   � ?   � 5  - & & � � �  3 f G + �                          {                                                                                                                           	 
-                        ! "             # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; <  Z           ! . ? Z z��        , ? A a�� ��    ������                        ITWeralionisDEMO-Regular 2� �� � �!���  ��������� 2b���uni0000uni000DVersion 1.000;Fontself Maker 3.5.13IT Weralionis Is a Trademark by Indotype FoundryCopyright \(c\) 2025 by Indotype Foundry. All rights reserved.IT Weralionis DEMO RegularIT Weralionis DEMO  �      " B =  K N Q T � � ���^��"F��<j��7��t�Hq��b��	L	�
-
-
-�zX��4h��,}�t�6���<��
-I���'�������P�P�?�P�#w��N��v�H�����U���M����Y���I���������W�'��:v�������p/
-��,
-q���bdlrm����������������`���������������4d�9���&��q�kkqqk�x�y��������_�������������������������^����^��^�4��"v����kqqk�k�q�������q�k1��:v�"��������{�q/
-��,
-p�]�EX�t�����������̓��
-��8�#<���0�������������������Ԏ��ʭ����#� ��
-I���v�U����w������Z���o2�������̎˒�����U�D�u�������� ��������Ο��1�=�5��@����	����� �P��"��"
-�������-�)��%��"���u��p�q�p����������^�7n58;�5�����Z�Q�,lQnV<�e�ߋ��#���^�5�%8�'�I�I��&���E$��p�p=��;�l��3�X�X��4�l�;����Jq#lNECߋ��8� 
-���>���Wl�F��"
-���D����L-����'�B�3�₿<�X�'�#�5�;�F�7|{��{-���ζ�Ϟ(
-�J�{.-�-���U��U�����{-�v���Ο(
-�1��̌ˈ˅��U����{�ߋ�����!���E���*�8���������}�u�x�o�=�o�rwxwxp�p�1�,���q�;���<���A3y������Ї.���~��N�=��N���>����I����͌���נv�����w 
-���1�u!
-��(�(�+���"
-���j�s����1�[#
-�O�[�1�[���[w�,�6��!
-�1���yL� {lprj~�~�������K�]��?�#
-���4�%���(���I���55K��"
-���u���b-���Dw 
-�O��D�1�[�J��~:�0���-
-�U��g�1�!
-��_�&�6K�Lp�i�a�M�C����2�[�1���M�P�Q� ��������������������������1�[�v���.�w��1���1���!
-�vh�d�a�:�� ����2�[�1����<�E�H�'�����3��[�U|��2���@��?�!
-�'�2�SR���0�$E��f��[�7�5�^�[�7�8�[�N!6�*�M�M��*����*�M�M5�*"f�v�ܛ�� 
-�H�3���F�� �(��"
-��؎֟ί�Ӗ�T�������͒���O��L��3|�V|��2���A�@��?�@,���,���$��p���D/�.34lLE�#�{�o��*3��]��֢���{�w�h���p�[���I�Q���d�v�u�w�U�r�w[jan\"5�*�M�M��*�����*�M�D}DoJ��v�v�H� 
-�X�3������������Wj�n��{h��m�"
-�I���i���d�{��s�����G-�hx��K�b���0����}��_��3��,�]�x��������������?�������
-���NNw^X>Et�
-�;�E�1o�<�f�`vgvgfua�#U��xW����
-�2��ɟ���Ѣ�
-,���v�G����1�!
-_ْ͑ˏ�@�1�GɍΊڈ�����+w 
-����!
-���'*R0:>�����1�f�;�&8�!����#�����8v�Zw���p��)
-�u8p9j;�`��*
-�+
-�e����w�E��E)
-u8o9j;�_���D��hx�c�W��`��*
-����������+
-�v�Zw���$�����8���){#T�cY�%���K�u��]p��%C�F�-�������=���L��v�[w���/��!
-�~�`�hG�#���Q�k�(�?�%���7������B�Z��Z����#�������O���u@��ތ����3��u��d@��� ���5���'��%��Y�|�F�ĳ�����kE+�	w�7f�]�b�x�����ƾ����[�d�����:�&C3xjK����w{myqG|���������`���6��bw 
-�@�4����oL�GQ[qg_��lESRF���a�8���5����{��&���Rl:H�{{��}���������������xk��j�\N�o�o�o_���]���L��:a������üZC��y�vM���@&������@����XyCrZZS`��Yv�|��bw��4�@�1|�h!
-P\[P([e�e�g|�aM%��c�e�gL��[�������`��o���[�?��}}�|hj��{w����΍��3�������������������������L����}��2���0����������2<������+/�B�*�
-8��ܪ��rznj�i1L��v������ڴ��������ʭԎ�����H0�܎/dmWwu��pA�v������
-�'���G�
-Uv���U6�~���������5�&��'�����wt�sxw��v�A�������������4Z�� �a]�^hh�}lx����S�ޚ�Ξ������,�4�+��>�� ���?�������~��]4��_I�G�#�(,�*��R�jŁ<j+`�A�k�y��� Zr�gQP�f������@��������I� ��S�Cꀤ����w�rrvwqr�w�-%��Y)Xpo��{� �h����rQ����uw�y�d�"���@����8bigf}@�v�<��mw 
-�-�'�k�.�uX�RPUibb��&
-� �����������p�z�v�w�vS�^����������v���'��1�&�&��7.
-��;`ii`��%�����k�b�cjjbc�j������'� �)�&�&�����;`ii`�V�v\�x\omg~��������	�� �B�i�����j�c�bkjbc�j�R#
-�����������-�0V5BT�_&
-�u�!�u�F=���8}�#
-�!
-Q[[P��f�l���[�x�v�<� 
-�*�'�4�'�!��@T[WZ�z[�OG[f]]$
-���������{��w�r�q��e�l�����������������z��w�r�q��e�l�����]�/<�v�;� 
-�*�'�O�/$
-�������cS��k�p�����V�9\TsPOg���C���-�R�-����'0O.ed/� �D[��r����������cW`����뿿�+��`+W`p��6� 
-�@�4��r�a�f�k����g��q��ʽǧ�������8��	�4��k{jxh|}��}������������������酝�%�@N�\vj`p��5���4�@�1�r�r\ao`y�VW�YDM[Lm{g�e�c��&�a�|������f�k���[�1����������}{�{/v�.Ӊǖ�������������������������X�v��� 
-���jC�j@sR�5'
-����������~���|y�z�4���7�����>���l�^֨*w�������������#�61/R*��<�c�r�x�y�p�w�r~xwvt@m힆��{{�{�|��,�R�������?�H�a�c�{������������(��Sv�W��jw��&�*� yznorr��zo���������ǋ��_��FfNSc|�|}K^�����H�Qn��y��ɦν<����'�*�1�2��[dd[��tnq�t_o����O[dd[��1�>ݺ¤��\��d����m�v��w��������T�p%
-�U������-v��w���p�3�����i�t׀�������)��S�q%
-��������T����v��w������h�_���G��Ot�o�|��*�T�I�$�]���G�
-�K�U�M�H�T�I�A�e��w������]�#l"t;c�s����;�n�"`�.�hS?i\fmc~�ė¡���%�� ����%�������'�^��{�4}���.��ǡ��ǎ���4�q���s�Qva�P�|�����i�����
-�@�����@�n��� 
-->HVcoy������1�[�1�[�1-
-�'
-������v���XQ[[P��f�l��;`ii`.
- 
-�h�/��J�[�Z��~�m�
-�D���Z��o�����������v��v�[w��1��a�h��vvq�p�v      �                                # 3        V  	   x n  	  $ �  	  
-  	  �  	  4�  	  F�  	  0*  	  `Z  	   �  	 	  �  	 
-(�  	  *"IT Weralionis DEMORegularIT Weralionis DEMO RegularVersion 1.000;Fontself Maker 3.5.13ITWeralionisDEMO-Regular C o p y r i g h t   ( c )   2 0 2 5   b y   I n d o t y p e   F o u n d r y .   A l l   r i g h t s   r e s e r v e d . I T   W e r a l i o n i s   D E M O R e g u l a r V e r s i o n   1 . 0 0 0 ; F o n t s e l f   M a k e r   3 . 5 . 1 3 ; X X X X ; I T W e r a l i o n i s D E M O - R e g u l a r ; 2 0 2 5 ; F L 8 4 2 I T   W e r a l i o n i s   D E M O   R e g u l a r V e r s i o n   1 . 0 0 0 ; F o n t s e l f   M a k e r   3 . 5 . 1 3 I T W e r a l i o n i s D E M O - R e g u l a r I T   W e r a l i o n i s   I s   a   T r a d e m a r k   b y   I n d o t y p e   F o u n d r y I n d o t y p e   F o u n d r y I n d o t y p e   F o u n d r y T h i s   F o n t   i s   f o r   P E R S O N A L   U S E   O N L Y .   N e e d   a   c o m m e r c i a l   l i c e n s e ?   p u r c h a s e   f r o m   o u r   s t o r e .   C o p y r i g h t   ( c )   2 0 2 5   B y   I n d o t y p e   F o u n d r y .   A l l   R i g h t s   R e s e r v e d . h t t p s : / / i n d o t y p e . c o m /                                               <       
- 0 J DFLT latn      ��        ��   kern kern                 
-8     0 j �"�*�~(.�6�>�F�J���	�	�
-D
-z
-� n�*pz��
-D
-D�R��4z�����  �� �� �� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� 	�� �� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� 	�� �� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  ,��  �� �� 	�� �� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  �� �� 	�� �� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  �� �� 	�� �� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  �� �� 	�� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <�� * �� �� �� �� 	�� �� �� �� �� �� �� �� �� ��  �� !�� "�� #�G %�o &�i '�o (�i )�] *�� +�� ,�� -�� .�� /�x 0�x 1�o 2�� 3�~ 4�x 5�� 6�� 7�} 8�Z 9�Z :�{ ;�q <�d  �� �� 	�� �� �� ��  �� !�� "�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� ��  �� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <�� ) �� �� �� �� 	�� �� �� �� �� �� �� �� �� �� �� !�� "�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  �� �� 	�� �� �� �� ��  �� "�� #�� &�� (�� )�� +�� ,�� 2�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� 	�� �� �� �� ��  �� !�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� �� &�� (�� )�� ,�� 3�� 5�� 6�� :�� ;�� <��  �� �� �� �m  �� !�y #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� �� �p  �� !�r #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� ,��  �� �� �� �^  �� !�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� �� �� �� "�� #�� %�� &�� '�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  �� �� �� �^ !�� #�� &�� (�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� �� �p !�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� :�� ;�� <��  �� ,��  �� ,��  �� �� �� �f !�y #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� ,��  �� �� �� �� �� �p �� �� !�y #�� &�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <�� ! �� �� �� �� �� �� �� �� !�y #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;�� <��  �� �� �� !��  �� �� �� �{ !�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� �� �� !�� #�� &�� (�� )�� +�� ,�� 3�� 6�� 7�� :�� ;�� <��  �� �� �� �{ !�� #�� &�� (�� )�� +�� ,�� 3�� 5�� 7�� :�� ;�� <��  �� �� �� �� !�� ,��  �� �� �� &�� (�� )�� +�� ,�� 3�� 5�� 6�� 7�� :�� ;�� <��  �� �� �� �� �� �� �� �� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� ;�� <��   �� �� �� �� �� �� �� �� !�� #�� %�� &�� '�� (�� )�� *�� +�� ,�� -�� .�� /�� 0�� 1�� 3�� 4�� 5�� 6�� 7�� 8�� 9�� :�� ;��   	        < 
- �   �h                                  ��������������                ��������������                ��������������                ��������������                ��  ����������                ��������������                ��������������                ������  ������                ����  ����������������������  ��������������                ��������������                ��  ����������                ��  ����������                ��  ����������                ��  ����������                    ��    ����                ��  ����������                    ����  ����    �f  �y  ��  ��  ����������                ��  ����������                ��  ����������                ��  ��������      �x  ��  ��   	 
-         ! " # $ % ' ) * - / 0 4 5 6 8 9 ;  	 3                                   	 	   
-                                       5                                      	 
-                                               
-              
-
-=== D:\web-docs\app\layout.tsx ===
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
-import "./globals.css";
-
-import { cn } from "@/lib/utils";
-import { SidebarProvider } from "@/components/ui/sidebar";
-
-import Header from "@/components/Header";
-import Layout from "@/components/layouts/Layout";
-import NextThemeProvider from "@/components/providers";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"]
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"]
-});
-
-const itWeralionis = localFont({
-  src: "./ITWeralionis.otf",
-  variable: "--font-it-weralionis",
-  display: "swap",
-});
-
-export const metadata: Metadata = {
-  title: "WebDocs",
-  description: "Learn Web Development Step by Step",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      suppressContentEditableWarning
-      className={cn(geistSans.variable, geistMono.variable, itWeralionis.variable)}
-    >
-      <body className={cn("antialiased bg-black text-white")}>
-        <NextThemeProvider>
-          <SidebarProvider className="flex flex-col justify-center items-center">
-            <Header />
-            <Layout>
-              {children}
-            </Layout>
-          </SidebarProvider>
-        </NextThemeProvider>
-      </body>
-    </html>
-  );
-}
-
-
-=== D:\web-docs\app\page.tsx ===
-import CardsSection from "@/components/CardsSection";
-import Hero from "@/components/Hero";
-
-export default function Home() {
-  return (
-    <div>
-      <Hero />
-      <CardsSection />
-    </div>
-  );
-}
-
-
-=== D:\web-docs\components\CardsSection.tsx ===
-import Image from 'next/image'
-import { Button } from './ui/button'
-import { ArrowRight, ChevronRight, FileCode, Palette } from 'lucide-react'
-
-const CardsSection = () => {
-  return (
-    <div className="w-full max-w-2xl flex flex-col gap-4 text-left mx-auto">
-      <div className="group flex items-center justify-between gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:border-red-500/30 transition-all duration-300">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-linear-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
-            <Image
-              src={"/images/html.png"}
-              alt='html'
-              width={100}
-              height={100}
-              className='object-cover object-center'
-            />
-          </div>
-          <div>
-            <h3 className="text-white font-semibold text-sm sm:text-base">
-              HTML5 Foundations
-            </h3>
-            <p className="text-gray-400 text-xs sm:text-sm mt-0.5">
-              Understand the structure of the web.
-            </p>
-          </div>
-        </div>
-        <Button variant="ghost" className="shrink-0 h-9 px-3 border border-white/10 rounded-lg text-white hover:bg-white/90 text-xs sm:text-sm">
-          Start <ChevronRight size={14} />
-        </Button>
-      </div>
-
-      <div className="group flex items-center justify-between gap-4 p-4 rounded-xl border border-white/10 bg-white/5 hover:border-red-500/30 transition-all duration-300">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-linear-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
-            <Image
-              src={"/images/css.png"}
-              alt='html'
-              width={100}
-              height={100}
-              className='object-cover object-center'
-            />
-          </div>
-          <div>
-            <h3 className="text-white font-semibold text-sm sm:text-base">
-              CSS3 Styling & Layouts
-            </h3>
-            <p className="text-gray-400 text-xs sm:text-sm mt-0.5">
-              Learn Flexbox, Grid, and responsive design.
-            </p>
-          </div>
-        </div>
-        <Button variant="ghost" className="shrink-0 h-9 px-3 border border-white/10 rounded-lg text-white hover:bg-white/90 text-xs sm:text-sm">
-          Start <ChevronRight size={14} />
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-export default CardsSection
-
-=== D:\web-docs\components\CourseGrid.tsx ===
-import React from 'react';
-
-const chapters = [
-  { id: 1, title: 'Introduction', desc: 'Learn how to build a full-stack web application with the free, Next.js Foundations course.' },
-  { id: 2, title: 'Getting Started', desc: 'Create a new Next.js application using the dashboard starter example and explore the project.' },
-  { id: 3, title: 'CSS Styling', desc: 'Style your Next.js application with Tailwind and CSS modules.' },
-  { id: 4, title: 'Optimizing Fonts and Images', desc: 'Optimize fonts and images with the Next.js built-in components.' },
-  { id: 5, title: 'Creating Layouts and Pages', desc: 'Create the dashboard routes and a shared layout that can be shared between multiple pages.' },
-  { id: 6, title: 'Navigating Between Pages', desc: 'Learn how to use the <Link> component to navigate between pages.' },
-  { id: 7, title: 'Setting Up Your Database', desc: 'Setup a database for your application and seed it with initial data.' },
-  { id: 8, title: 'Fetching Data', desc: 'Learn about the different ways to fetch data in Next.js, and fetch data for your dashboard page.' },
-  { id: 9, title: 'Static and Dynamic Rendering', desc: 'Understand how rendering works in Next.js, and make your dashboard app dynamic.' },
-  { id: 10, title: 'Streaming', desc: 'Improve your application\'s loading experience with streaming and loading skeletons.' },
-  { id: 11, title: 'Adding Search and Pagination', desc: 'Add search and pagination to your dashboard application using Next.js APIs.' },
-  { id: 12, title: 'Mutating Data', desc: 'Mutate data using React Server Actions, and revalidate the Next.js cache.' },
-  { id: 13, title: 'Handling Errors', desc: 'Handle errors gracefully with error.tsx and notFound.' },
-  { id: 14, title: 'Improving Accessibility', desc: 'Implement server-side form validation and improve accessibility in your forms.' },
-  { id: 15, title: 'Adding Authentication', desc: 'Add authentication to protect your dashboard routes using NextAuth.js and Server Actions.' },
-  { id: 16, title: 'Adding Metadata', desc: 'Learn how to add metadata to your Next.js application.' },
-];
-
-const CourseGrid = () => {
-  return (
-    <div className="w-full max-w-[1200px] px-6 pb-24">
-      
-      {/* "How does it work" Section */}
-      <div className="mb-24 text-center md:text-left">
-         <div className="mb-10 flex flex-col items-center md:flex-row md:items-baseline md:gap-4">
-            <h2 className="text-3xl font-bold text-white">How does the course work?</h2>
-            <p className="text-xl text-gray-500">By building a full web application. Step by step.</p>
-         </div>
-         
-         {/* Simple Diagram Replacement */}
-         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-             {[
-               { icon: 'settings', text: 'Set up your local environment and initializing the "ACME" Next.js project template.'},
-               { icon: 'layout', text: 'Use pre-styled components as part of each chapter that leverage Next.js conventions.'},
-               { icon: 'link', text: 'Hook up real application logic and data to bring a fully-fledged demo website to life.'},
-               { icon: 'globe', text: 'At the end you\'ll have a website that\'s ready to ship and the knowledge to build your own.'}
-             ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center text-center md:flex-row md:text-left md:items-start gap-4">
-                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-blue-400">
-                      <div className="h-2 w-2 rounded-full bg-current" />
-                   </div>
-                   <p className="text-sm text-gray-400 leading-relaxed">{item.text}</p>
-                </div>
-             ))}
-         </div>
-         
-         {/* Features Pills */}
-         <div className="mt-16 flex flex-col md:flex-row justify-center gap-6">
-            <div className="flex items-center gap-4 rounded-full border border-gray-800 bg-gray-900/50 py-3 px-6">
-               <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-black">⚡</div>
-               <div>
-                  <h4 className="font-semibold text-white text-sm">Your progress will be synced</h4>
-                  <p className="text-xs text-gray-500">Go at your own pace.</p>
-               </div>
-            </div>
-            <div className="flex items-center gap-4 rounded-full border border-gray-800 bg-gray-900/50 py-3 px-6">
-               <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-black">?</div>
-               <div>
-                  <h4 className="font-semibold text-white text-sm">Test your knowledge</h4>
-                  <p className="text-xs text-gray-500">Take quick quizzes.</p>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      {/* Grid Section */}
-      <div className="mb-8 flex flex-col md:flex-row items-baseline gap-4 text-center md:text-left">
-        <h2 className="text-3xl font-bold text-white">What will I learn?</h2>
-        <p className="text-xl text-gray-500">Here's everything that's covered in the course.</p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {chapters.map((chapter) => (
-          <div key={chapter.id} className="group flex flex-col rounded-xl border border-gray-800 bg-black p-6 transition-all hover:border-gray-600 hover:bg-gray-900/30 cursor-pointer">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-400 transition-colors group-hover:bg-white group-hover:text-black">
-                {chapter.id}
-              </div>
-              <h3 className="text-lg font-semibold text-white">{chapter.title}</h3>
-            </div>
-            <p className="text-sm text-gray-400 leading-relaxed">{chapter.desc}</p>
-          </div>
-        ))}
-        {/* Next Steps Card */}
-        <div className="group flex flex-col rounded-xl border border-gray-800 bg-black p-6 transition-all hover:border-gray-600 hover:bg-gray-900/30 cursor-pointer">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-400 transition-colors group-hover:bg-white group-hover:text-black">
-                17
-              </div>
-              <h3 className="text-lg font-semibold text-white">Next Steps</h3>
-            </div>
-            <p className="text-sm text-gray-400 leading-relaxed">Next.js Dashboard Course Conclusion</p>
-          </div>
-      </div>
-      
-      <div className="mt-12 flex justify-center">
-         <button className="rounded-md bg-white px-6 py-3 text-sm font-medium text-black hover:bg-gray-200">Start Learning →</button>
-      </div>
-    </div>
-  )
-}
-
-export default CourseGrid
-
-=== D:\web-docs\components\Header.tsx ===
-import { PenLine } from "lucide-react";
-import Logo from "./Logo";
-import { Button } from "./ui/button";
-import { SidebarTrigger } from "./ui/sidebar";
-
-const Header = () => {
-  return (
-    <header className="sticky top-0 z-50 w-full bg-black/80 backdrop-blur-md py-2 border-b border-gray-800">
-      <div className="flex h-16 items-center justify-between px-3 w-full mx-auto">
-        <Logo />
-        <div className="flex justify-center items-center gap-3">
-          <Button className="h-7 w-5 flex items-center rounded-full bg-white text-md font-medium text-black hover:bg-gray-200 transition-colors font-it-weralionis tracking-wide">
-            <SidebarTrigger />
-          </Button>
-
-          <Button className="flex items-center rounded-md bg-white py-3 px-5 text-md font-medium text-black hover:bg-gray-200 transition-colors font-it-weralionis tracking-wide">
-            <PenLine className="mr-2" />
-            Learn
-          </Button>
-        </div>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
-
-
-=== D:\web-docs\components\Hero.tsx ===
-import { ArrowRight, ChevronRight, FileCode, Palette } from "lucide-react";
-import React from "react";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-
-const Hero = () => {
-  return (
-    <section className="relative w-full flex flex-col justify-center items-center py-16">
-      {/* Linear Glow */}
-      <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-4xl h-40 opacity-50 pointer-events-none">
-        <div className="absolute inset-0 bg-linear-to-r from-red-500/50 via-red-500/60 to-red-500/50 blur-[80px] rounded-xl mix-blend-screen" />
-      </div>
-
-      <div className="relative z-10 text-center px-4">
-        {/* Badge */}
-        <Badge className="mb-6 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-1.5 text-xs text-red-400 font-it-weralionis tracking-wide">
-          <span className="font-semibold uppercase">Important</span>
-          <span className="opacity-90">React2Shell Security Advisory</span>
-          <span className="flex items-center ml-1 opacity-70 gap-0.5">
-            Learn more <ChevronRight size={14} />
-          </span>
-          <span className="opacity-80 ml-2">Start with HTML, CSS & JS!</span>
-        </Badge>
-
-        {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-it-weralionis tracking-tight text-white mb-4">
-          Learn Web Development
-          <br />
-          <span className="text-red-400">Step by Step</span>
-        </h1>
-
-        {/* Minimal Description */}
-        <p className="max-w-xl text-lg md:text-xl text-gray-400 leading-relaxed mx-auto">
-          Begin with <span className="text-white font-it-weralionis">HTML</span>,{" "}
-          <span className="text-white font-it-weralionis">CSS</span>, and{" "}
-          <span className="text-white font-it-weralionis">JavaScript</span> — the
-          essentials for building real websites.
-        </p>
-
-        {/* CTA */}
-        <div className="mt-8 flex justify-center">
-          <Button className="flex items-center rounded-full bg-white py-3 px-5 text-md font-medium text-black hover:bg-gray-200 transition-colors font-it-weralionis tracking-wide">
-            Start Learning ⚡
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default Hero;
-
-
-=== D:\web-docs\components\icons.tsx ===
-import {
-  AlertTriangle,
-  ArrowRight,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Command,
-  Copy,
-  CreditCard,
-  File,
-  FileText,
-  HelpCircle,
-  Image,
-  Laptop,
-  Loader2,
-  Menu,
-  Moon,
-  MoreVertical,
-  Pizza,
-  Plus,
-  Search,
-  Settings,
-  SunMedium,
-  Terminal,
-  Trash,
-  Twitter,
-  User,
-  X,
-} from "lucide-react";
-import { type LucideIcon } from 'lucide-react';
-
-export type Icon = LucideIcon;
-
-export const Icons = {
-  // Brand / Custom Icons
-  logo: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
-      <rect width="256" height="256" fill="none" />
-      <line
-        x1="208"
-        y1="128"
-        x2="128"
-        y2="208"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="16"
-      />
-      <line
-        x1="192"
-        y1="40"
-        x2="40"
-        y2="192"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="16"
-      />
-    </svg>
-  ),
-  gitHub: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-    </svg>
-  ),
-  googleSheets: (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 87.3 122.8" {...props}>
-      <path
-        d="M83.4 20.3L64.8 1.7C63.7.6 62.2 0 60.7 0H10C4.5 0 0 4.5 0 10v102.8c0 5.5 4.5 10 10 10h67.3c5.5 0 10-4.5 10-10V24.3c0-1.5-.6-3-1.9-4z"
-        fill="#0F9D58"
-      />
-      <path d="M87.3 24.3H63V0l24.3 24.3z" fill="#006634" />
-      <path fill="#FFF" d="M16 28h55.3v66.8H16z" />
-      <path fill="#0F9D58" d="M25 40h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9z" />
-      <path fill="#006634" d="M25 58h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9zm14 0h9v9h-9z" />
-    </svg>
-  ),
-  // UI Icons
-  sun: SunMedium,
-  moon: Moon,
-  twitter: Twitter,
-  close: X,
-  spinner: Loader2,
-  chevronLeft: ChevronLeft,
-  chevronRight: ChevronRight,
-  search: Search,
-  menu: Menu,
-  terminal: Terminal,
-  copy: Copy,
-  check: Check,
-  warning: AlertTriangle,
-  arrowRight: ArrowRight,
-  help: HelpCircle,
-  pizza: Pizza,
-  settings: Settings,
-  laptop: Laptop,
-  user: User,
-  add: Plus,
-  media: Image,
-  trash: Trash,
-  ellipsis: MoreVertical,
-  page: FileText,
-  billing: CreditCard,
-  file: File,
-  cmd: Command,
-};
-
-=== D:\web-docs\components\layouts\AppSidebar.tsx ===
-"use client";
-
-import React from "react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarFooter,
-} from "@/components/ui/sidebar";
-
-interface AppSidebarProps {
-  side?: "left" | "right";
-  children?: React.ReactNode;
-  // Allow overriding the header/content/footer if needed
-  header?: React.ReactNode;
-  content?: React.ReactNode;
-  footer?: React.ReactNode;
-}
-
-const AppSidebar: React.FC<AppSidebarProps> = ({
-  side = "left",
-  children,
-  header,
-  content,
-  footer,
-}) => {
-  return (
-    <Sidebar
-      side={side}
-      collapsible="offcanvas"
-      className="bg-black text-white border-gray-800 pl-3"
-    >
-      <SidebarHeader className="bg-black text-white pt-20">
-        {header}
-      </SidebarHeader>
-
-      <SidebarContent className="bg-black text-white pl-4">
-        {content ?? children}
-      </SidebarContent>
-
-      <SidebarFooter className="bg-black text-white">
-        {footer}
-      </SidebarFooter>
-    </Sidebar>
-  );
-};
-
-export default AppSidebar;
-
-
-=== D:\web-docs\components\layouts\Layout.tsx ===
-"use client";
-
-import React, { ReactNode } from "react";
-import AppSidebar from "@/components/layouts/AppSidebar";
-import SidebarNavHeader from "./sidebar-nav/Header";
-import SidebarNavContent from "./sidebar-nav/Content";
-
-interface LayoutProps {
-  children?: ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  return (
-    <div className="relative flex min-h-screen bg-black">
-      <AppSidebar
-        side="left"
-        header={<SidebarNavHeader />}
-        content={<SidebarNavContent />}
-        footer={<p className="text-gray-400 text-xs">Left Sidebar Footer</p>}
-      />
-
-      {/* Main Content */}
-      <main className="flex-1 min-h-screen">
-        {children}
-      </main>
-
-      {/* Right Sidebar with its own provider */}
-      {/* <AppSidebar
-        side="right"
-        content={<p className="text-white">Right Sidebar Content</p>}
-      /> */}
-    </div>
-  );
-};
-
-export default Layout;
-
-
-=== D:\web-docs\components\layouts\sidebar-nav\Content.tsx ===
-"use client"; 
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-const navItems = [
-  {
-    name: "HTML Basics",
-    href: "/docs/html",
-    tabs: [
-      { title: "Introduction", href: "/docs/html/intro" },
-      { title: "Elements & Tags", href: "/docs/html/elements" },
-      { title: "Attributes", href: "/docs/html/attributes" },
-      { title: "Forms & Inputs", href: "/docs/html/forms" },
-    ]
-  },
-  {
-    name: "Git Basics",
-    href: "/docs/git",
-    tabs: [
-      { title: "Installation", href: "/docs/git/install" },
-      { title: "Init & Clone", href: "/docs/git/init" },
-      { title: "Add & Commit", href: "/docs/git/commit" },
-      { title: "Push & Pull", href: "/docs/git/push" },
-    ]
-  },
-];
-
-const SidebarNavContent = () => {
-  const pathname = usePathname();
-
-  const activeModule = navItems.find((item) => pathname.startsWith(item.href));
-
-  if (!activeModule) {
-    return (
-      <div className="mt-8 px-2 text-zinc-500 text-sm">
-        Select a module above to see contents.
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col w-full px-2 mt-6">
-      {/* Display the active module name */}
-      <h4 className="text-blue-500 font-semibold text-sm mb-4 font-it-weralionis tracking-wider uppercase">
-        {activeModule.name} Content
-      </h4>
-      
-      {/* Render ONLY the tabs for the active module */}
-      <ul className="flex flex-col gap-1 border-l border-zinc-800 ml-2 pl-4">
-        {activeModule.tabs.map((tab, index) => {
-          const isTabActive = pathname === tab.href;
-
-          return (
-            <li key={index}>
-              <Link
-                href={tab.href}
-                className={`text-[13.5px] font-medium transition-colors block py-1
-                  ${isTabActive 
-                    ? "text-white translate-x-1" 
-                    : "text-zinc-400 hover:text-zinc-200"
-                  }`}
-              >
-                {tab.title}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
-
-export default SidebarNavContent;
-
-=== D:\web-docs\components\layouts\sidebar-nav\Header.tsx ===
-"use client";
-
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-
-const items = [
-  {
-    src: "/images/html.png",
-    title: "HTML5 Foundations",
-    desc: "The structure of the web",
-    href: "/docs/html",
-  },
-  {
-    src: "/images/git.png",
-    title: "Git & Version Control",
-    desc: "Track changes & collaborate",
-    href: "/docs/git", 
-  },
-]
-
-const SidebarNavHeader = () => {
-  const pathname = usePathname();
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <p className="px-2 font-it-weralionis font-semibold text-zinc-200 uppercase tracking-wider mt-3.5">
-        Select a Module
-      </p>
-
-      <div className="flex flex-col gap-1.5">
-        {items.map(({ src, title, desc, href }) => {
-          // Check if the current URL matches exactly or is a sub-path
-          const isActive = pathname === href || pathname.startsWith(href + '/');
-          return (
-            <Link key={title} href={href} className="block group">
-              <div
-                className={`flex items-center gap-3 p-2 rounded-xl border transition-all duration-200 
-                  ${isActive 
-                    ? "bg-white/10 border-zinc-600 ring-1 ring-white/5" 
-                    : "border-transparent hover:bg-white/5 hover:border-zinc-800"
-                  }`}
-              >
-                {/* Icon Container */}
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 overflow-hidden border transition-colors
-                   ${isActive ? "border-white/20 bg-gray-800" : "bg-gradient-to-br from-gray-800 to-black border-white/10"}`}>
-                  <Image 
-                    src={src} 
-                    alt={title} 
-                    width={40} 
-                    height={40} 
-                    className="object-cover w-full h-full" 
-                  />
-                </div>
-
-                {/* Text Content */}
-                <div className="flex flex-col">
-                  <span className={`text-sm font-medium font-it-weralionis transition-colors ${isActive ? "text-white" : "text-zinc-200 group-hover:text-white"}`}>
-                    {title}
-                  </span>
-                  <span className="text-xs text-zinc-500 tracking-tight group-hover:text-zinc-400 transition-colors">
-                    {desc}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-export default SidebarNavHeader
-
-=== D:\web-docs\components\layouts\table-of-contents\Header.tsx ===
-import React from 'react'
-
-const TableOfContentsHeader = () => {
-  return (
-    <div>TableOfContentsHeader</div>
-  )
-}
-
-export default TableOfContentsHeader
-
-=== D:\web-docs\components\Logo.tsx ===
-const Logo = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      {/* Red glow background */}
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[180px] h-[20px] opacity-80 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-red-600 to-transparent blur-[35px] rounded-full mix-blend-screen" />
-      </div>
-
-      {/* Logo content */}
-      <div className="relative z-10 flex items-center">
-        <span className="text-[34px] flex items-center">🤖</span>
-        <span className="ml-1 text-4xl text-white font-it-weralionis">
-          WebDocs
-        </span>
-      </div>
-    </div>
-  );
-};
-
-export default Logo;
-
-
-=== D:\web-docs\components\providers.tsx ===
-import React from 'react'
-import { ThemeProvider } from 'next-themes'
-
-interface NextThemeProviderProps {
-  children: React.ReactNode;
-}
-
-export default function NextThemeProvider({ children }: NextThemeProviderProps) {
-  return (
-    <ThemeProvider
-      attribute={"class"}
-      defaultTheme='system'
-      enableSystem
-    >
-      {children}
-    </ThemeProvider>
-  )
-}
-
-
-=== D:\web-docs\config\docs.ts ===
-import { DocsSidebarConfig } from "@/types/nav";
-
-export const docsConfig: DocsSidebarConfig = {
-  sidebar: [
-    {
-      title: "Getting Started",
-      items: [
-        {
-          title: "Introduction",
-          href: "/docs/v1/getting-started/introduction",
-          items: []
-        },
-        {
-          title: "Installation",
-          href: "/docs/v1/getting-started/installation",
-          items: []
-        },
-      ]
-    },
-    {
-      title: "API Reference",
-      items: [
-        {
-          title: "Endpoints",
-          href: "/docs/v1/api-reference/endpoints",
-          items: [],
-        }
-      ]
-    }
-  ]
-}
-
-=== D:\web-docs\config\site.ts ===
-import { SiteConfig } from "@/types/site";
-
-export const siteConfig: SiteConfig = {
-  name: "Web Socs",
-  description: "A production-ready documentation platform built with Next.js 14.",
-  url: "",
-  ogImage: "",
-  links: {
-    twitter: "",
-    github: "",
-  },
-  author: {
-    name: "Abdul Manan",
-    url: ""
-  }
-}
-
-=== D:\web-docs\eslint.config.mjs ===
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
-
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
-
-export default eslintConfig;
-
-
-=== D:\web-docs\hooks\use-mobile.ts ===
-import * as React from "react"
-
-const MOBILE_BREAKPOINT = 768
-
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
-
-  return !!isMobile
-}
-
-
-=== D:\web-docs\lib\docs\get-docs.ts ===
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import { Doc } from "@/types/doc";
-
-// Define where your docs live
-const docsDirectory = path.join(process.cwd(), "content/docs");
-
-export async function getDocFromSlug(slug: string[]): Promise<Doc | null> {
-  const slugPath = slug.join("/");
-  const filePath = path.join(docsDirectory, `${slugPath}.mdx`);
-
-  try {
-    // 1. Check if file exists
-    if (!fs.existsSync(filePath)) {
-      return null;
-    }
-
-    // 2. Read file content
-    const fileContent = fs.readFileSync(filePath, "utf8");
-
-    // 3. Parse frontmatter
-    const { data, content } = matter(fileContent);
-
-    // 4. Return typed Doc object
-    return {
-      _id: slugPath,
-      slug: `/${slugPath}`,
-      slugAsParams: slugPath,
-      title: data.title,
-      description: data.description,
-      published: data.published ?? true,
-      body: {
-        raw: content,
-        code: content, // We will handle MDX compilation in the next step
-      },
-      ...data, // Spread other frontmatter fields
-    } as Doc;
-  } catch (error) {
-    console.error(`Error reading doc: ${slugPath}`, error);
-    return null;
-  }
-}
-
-export async function getAllDocs(): Promise<Doc[]> {
-  // This is a simplified recursive walker to find all .mdx files
-  const walkSync = (dir: string, filelist: string[] = []) => {
-    fs.readdirSync(dir).forEach((file) => {
-      const dirFile = path.join(dir, file);
-      try {
-        filelist =
-          fs.statSync(dirFile).isDirectory()
-            ? walkSync(dirFile, filelist)
-            : filelist.concat(dirFile);
-      } catch (err) {
-        // Ignore errors for now
-      }
-    });
-    return filelist;
-  };
-
-  const files = walkSync(docsDirectory);
-  
-  const docs = files
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => {
-      const relativePath = path.relative(docsDirectory, file);
-      const slug = relativePath.replace(/\.mdx$/, "").split(path.sep);
-      // We can reuse getDocFromSlug logic synchronously here if needed
-      // or just parse manually for performance
-      const content = fs.readFileSync(file, "utf8");
-      const { data } = matter(content);
-      
-      const slugStr = slug.join("/");
-      
-      return {
-        _id: slugStr,
-        slug: `/${slugStr}`,
-        slugAsParams: slugStr,
-        title: data.title,
-        description: data.description,
-        published: data.published ?? true,
-      } as Doc;
-    });
-
-  return docs;
-}
-
-=== D:\web-docs\lib\docs.ts ===
-import { DocsData } from "@/types";
-
-export const docsData: DocsData = {
-  // HTML MODULE
-  html: {
-    intro: {
-      title: "Introduction to HTML",
-      description: "HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser. It is the skeletal system of the web.",
-      code: `<!DOCTYPE html>
-<html>
-  <head>
-    <title>Page Title</title>
-  </head>
-  <body>
-    <h1>My First Heading</h1>
-    <p>My first paragraph.</p>
-  </body>
-</html>`,
-      points: [
-        "HTML describes the structure of a Web page.",
-        "HTML consists of a series of elements.",
-        "Elements tell the browser how to display the content.",
-      ],
-    },
-    elements: {
-      title: "HTML Elements & Tags",
-      description: "An HTML element is defined by a start tag, some content, and an end tag. Elements can be nested inside other elements.",
-      code: `<!-- A Paragraph Element -->
-<p>This is a paragraph.</p>
-
-<!-- A Link Element -->
-<a href="https://google.com">Click me</a>
-
-<!-- An Image Element (Self-closing) -->
-<img src="logo.png" alt="Logo" />`,
-      points: [
-        "Block-level elements start on a new line.",
-        "Inline elements do not start on a new line.",
-        "Some elements are 'void' (no closing tag).",
-      ],
-    },
-  },
-
-  // GIT MODULE
-  git: {
-    install: {
-      title: "Installing Git",
-      description: "Before you can use Git, you have to install it on your computer. You can check if it is already installed by typing 'git --version' in your terminal.",
-      code: `# Check version
-git --version
-
-# Configure identity (Run after install)
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"`,
-      points: [
-        "Download Git from git-scm.com.",
-        "Configure your username and email immediately.",
-      ],
-    },
-    init: {
-      title: "Initializing & Cloning",
-      description: "To start a new project with Git, you either initialize a new repository locally or clone an existing one from a remote source like GitHub.",
-      code: `# Initialize a new repo in current folder
-git init
-
-# Clone an existing repo
-git clone https://github.com/user/repo.git`,
-      points: [
-        "git init creates a hidden .git folder.",
-        "git clone downloads the entire history.",
-      ],
-    },
-  },
-};
-
-=== D:\web-docs\lib\utils.ts ===
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
-export function  absoluteUrl(path:string) {
-  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`
-}
-
-=== D:\web-docs\list-files.js ===
-const fs = require('fs');
-const path = require('path');
-
-// Folders to ignore
-const IGNORED_FOLDERS = new Set(['node_modules', '.next', 'dist', '.git', 'out', 'public', 'ui']);
-
-// Specific files to ignore
-const IGNORED_FILES = new Set(['README.md', 'package-lock.json', 'all_files.txt']);
-
-// File extensions to ignore (e.g., image types)
-const IGNORED_EXTENSIONS = new Set([
-    '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.webp', '.ico', '.tiff', '.psd', '.json', 'mjs'
-]);
-
-// Recursive function to get all files
-function listFiles(dirPath, fileList = []) {
-    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-
-    for (const entry of entries) {
-        const fullPath = path.join(dirPath, entry.name);
-
-        if (entry.isDirectory()) {
-            if (!IGNORED_FOLDERS.has(entry.name)) {
-                listFiles(fullPath, fileList);
-            }
-        } else {
-            const ext = path.extname(entry.name).toLowerCase();
-            if (!IGNORED_FILES.has(entry.name) && !IGNORED_EXTENSIONS.has(ext)) {
-                fileList.push(fullPath);
-            }
-        }
-    }
-
-    return fileList;
-}
-
-// ✅ Target directory (current folder)
-const targetDir = path.resolve(__dirname, './');
-const outputFile = path.join(__dirname, 'all_files.txt');
-
-const files = listFiles(targetDir);
-
-// Create write stream
-const writeStream = fs.createWriteStream(outputFile, { flags: 'w' });
-
-files.forEach(file => {
-    try {
-        const content = fs.readFileSync(file, 'utf8');
-        writeStream.write(`=== ${file} ===\n`);
-        writeStream.write(content + '\n\n');
-    } catch (err) {
-        writeStream.write(`Could not read file ${file}: ${err.message}\n\n`);
-    }
-});
-
-writeStream.end(() => {
-    console.log(`✅ All file names and contents written to: ${outputFile}`);
-});
-
-
-=== D:\web-docs\next-env.d.ts ===
-/// <reference types="next" />
-/// <reference types="next/image-types/global" />
-import "./.next/dev/types/routes.d.ts";
-
-// NOTE: This file should not be edited
-// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
-
-
-=== D:\web-docs\next.config.ts ===
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
-
-
-=== D:\web-docs\postcss.config.mjs ===
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
-
-export default config;
-
-
-=== D:\web-docs\project-structure.md ===
-
-.
-├── .env.example
-├── .env.local
-├── .eslintrc.json
-├── .gitignore
-├── .prettierrc
-├── components.json
-├── next.config.mjs
-├── package.json
-├── postcss.config.mjs
-├── tailwind.config.ts
-├── tsconfig.json
-├── mdx-components.tsx
-├── public/
-│ ├── fonts/
-│ │ └── ITWeralionis.otf
-│ ├── images/
-│ │ ├── og-bg.png
-│ │ └── logo.svg
-│ └── robots.txt
-├── .github/
-│ └── workflows/
-│ └── ci.yml
-├── content/
-│ └── docs/
-│ ├── v1/
-│ │ ├── getting-started/
-│ │ │ ├── installation.mdx
-│ │ │ └── introduction.mdx
-│ │ └── api-reference/
-│ │ └── endpoints.mdx
-│ └── v2/
-│ └── getting-started/
-│ └── migration.mdx
-├── scripts/
-│ └── sync-sheets.ts
-├── app/
-│ ├── favicon.ico
-│ ├── globals.css
-│ ├── layout.tsx
-│ ├── not-found.tsx
-│ ├── error.tsx
-│ ├── sitemap.ts
-│ ├── (marketing)/
-│ │ ├── layout.tsx
-│ │ └── page.tsx
-│ ├── docs/
-│ │ ├── layout.tsx
-│ │ └── [...slug]/
-│ │ ├── layout.tsx
-│ │ ├── loading.tsx
-│ │ ├── page.tsx
-│ │ └── not-found.tsx
-│ └── api/
-│ ├── og/
-│ │ └── route.tsx
-│ ├── search/
-│ │ └── route.ts
-│ └── revalidate/
-│ └── route.ts
-├── components/
-│ ├── icons/
-│ │ ├── index.tsx
-│ │ └── custom-icons.tsx
-│ ├── layout/
-│ │ ├── site-header.tsx
-│ │ ├── site-footer.tsx
-│ │ ├── main-nav.tsx
-│ │ ├── mobile-nav.tsx
-│ │ └── mode-toggle.tsx
-│ ├── docs/
-│ │ ├── sidebar.tsx
-│ │ ├── sidebar-item.tsx
-│ │ ├── table-of-contents.tsx
-│ │ ├── pager.tsx
-│ │ ├── breadcrumbs.tsx
-│ │ └── docs-search.tsx
-│ ├── mdx/
-│ │ ├── mdx-remote.tsx
-│ │ ├── code-block.tsx
-│ │ ├── callout.tsx
-│ │ ├── card.tsx
-│ │ └── steps.tsx
-│ ├── sheets/
-│ │ ├── project-card.tsx
-│ │ └── data-table.tsx
-│ └── ui/
-│ ├── accordion.tsx
-│ ├── button.tsx
-│ ├── scroll-area.tsx
-│ ├── separator.tsx
-│ ├── sheet.tsx
-│ ├── skeleton.tsx
-│ └── ...
-├── config/
-│ ├── site.ts
-│ ├── docs.ts
-│ ├── marketing.ts
-│ └── navigation.ts
-├── hooks/
-│ ├── use-config.ts
-│ ├── use-media-query.ts
-│ ├── use-mounted.ts
-│ └── use-scroll.ts
-├── lib/
-│ ├── utils.ts
-│ ├── constants.ts
-│ ├── docs/
-│ │ ├── get-docs.ts
-│ │ ├── get-toc.ts
-│ │ └── utils.ts
-│ └── google/
-│ ├── auth.ts
-│ ├── sheets-client.ts
-│ ├── sheets-fetcher.ts
-│ └── transformers.ts
-├── actions/
-│ ├── get-sheet-data.ts
-│ └── submit-feedback.ts
-└── types/
-├── index.d.ts
-├── nav.ts
-├── doc.ts
-└── google-sheets.ts
-
-=== D:\web-docs\types\api.ts ===
-// types/api.ts (Server Layer)
-
-export interface ApiErrorResponse {
-  error: {
-    code: string;
-    message: string;
-    details?: unknown;
-  };
-}
-
-export interface ApiSuccessResponse<T> {
-  data: T;
-  meta?: {
-    page?: number;
-    limit?: number;
-    total?: number;
-  };
-}
-
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
-// Search specific
-export interface SearchResult {
-  id: string;
-  title: string;
-  content: string;
-  url: string;
-  type: "doc" | "project" | "blog";
-  hierarchy?: {
-    lvl0: string | null;
-    lvl1: string | null;
-    lvl2: string | null;
-  };
-}
-
-export interface SearchRequest {
-  query: string;
-  limit?: number;
-  filters?: Record<string, string>;
-}
-
-// Server Actions
-export type ServerActionState<T = unknown> = {
-  status: "idle" | "success" | "error";
-  message?: string;
-  errors?: Record<string, string[]>;
-  data?: T;
-};
-
-// Revalidation
-export interface RevalidatePayload {
-  secret: string;
-  path?: string;
-  tag?: string;
-  type: "page" | "layout";
-}
-
-=== D:\web-docs\types\components.ts ===
-// types/components.ts
-
-import { PagerData, TocEntry } from "./doc";
-import { SidebarNavItem } from "./nav";
-
-export interface IconProps extends React.SVGProps<SVGSVGElement> {
-  size?: number | string;
-}
-
-export interface CalloutProps {
-  type?: "default" | "warning" | "danger" | "info";
-  title?: string;
-  icon?: string;
-  children?: React.ReactNode;
-}
-
-export interface CodeBlockProps {
-  language?: string;
-  filename?: string;
-  showLineNumbers?: boolean;
-  value: string;
-}
-
-export interface MdxCardProps {
-  href?: string;
-  className?: string;
-  title: string;
-  children: React.ReactNode;
-}
-
-export interface DocsPagerProps {
-  pager: PagerData;
-}
-
-export interface DocsSidebarProps {
-  items: SidebarNavItem[];
-  pathname: string | null;
-}
-
-export interface TableOfContentsProps {
-  toc: TocEntry[];
-}
-
-=== D:\web-docs\types\doc.ts ===
-// types/doc.ts
-
-export type DocVersion = "v1" | "v2" | "latest";
-
-export interface DocFrontmatter {
-  title: string;
-  description?: string;
-  date?: string;
-  published: boolean;
-  authors?: string[];
-  image?: string;
-  toc?: boolean;
-  radix?: boolean; // Example of specific feature flags
-}
-
-export interface Doc extends DocFrontmatter {
-  _id: string;
-  slug: string;
-  slugAsParams: string;
-  body: {
-    raw: string;
-    code: string; // MDX compiled code
-  };
-  readingTime?: {
-    text: string;
-    minutes: number;
-    time: number;
-    words: number;
-  };
-}
-
-export interface TocEntry {
-  title: string;
-  url: string;
-  depth: number;
-  items?: TocEntry[];
-}
-
-export interface BreadcrumbItem {
-  title: string;
-  href: string;
-  active?: boolean;
-}
-
-export interface PagerItem {
-  title: string;
-  href: string;
-}
-
-export interface PagerData {
-  prev: PagerItem | null;
-  next: PagerItem | null;
-}
-
-=== D:\web-docs\types\google-sheets.ts ===
-// types/google-sheets.ts
-
-export interface GoogleSheetConfig {
-  spreadsheetId: string;
-  range: string;
-  apiKey?: string;
-}
-
-// Represents a raw row from Google Sheets API
-export type RawSheetRow = string[];
-
-// Represents a row converted to a keyed object
-export type SheetRowData = Record<string, string | number | boolean | null>;
-
-// Specific domain model for a project/resource fetched from Sheets
-export interface ProjectData {
-  id: string;
-  name: string;
-  description: string;
-  status: "active" | "archived" | "beta";
-  category: string;
-  tags: string[];
-  websiteUrl?: string;
-  githubUrl?: string;
-  updatedAt: string;
-}
-
-export interface SheetError {
-  code: number;
-  message: string;
-  status: string;
-}
-
-=== D:\web-docs\types\index.ts ===
-// ==========================================
-// types/utils.ts
-// ==========================================
-
-export type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
-
-export type Nullable<T> = T | null;
-export type Optional<T> = T | undefined;
-export type Maybe<T> = T | null | undefined;
-
-export type Dict<T = unknown> = Record<string, T>;
-
-export type AsyncResult<T, E = Error> = 
-  | { success: true; data: T; error?: never }
-  | { success: false; data?: never; error: E };
-
-export type SearchParams = { [key: string]: string | string[] | undefined };
-
-// ==========================================
-// types/site.ts
-// ==========================================
-
-export interface SiteConfig {
-  name: string;
-  description: string;
-  url: string;
-  ogImage: string;
-  links: {
-    twitter: string;
-    github: string;
-  };
-  author: {
-    name: string;
-    url: string;
-  };
-}
-
-export interface EnvConfig {
-  NEXT_PUBLIC_APP_URL: string;
-  GOOGLE_SHEETS_API_KEY?: string;
-  GOOGLE_SHEETS_ID?: string;
-  GOOGLE_SERVICE_ACCOUNT_EMAIL?: string;
-  GOOGLE_PRIVATE_KEY?: string;
-  NODE_ENV: 'development' | 'production' | 'test';
-}
-
-// ==========================================
-// types/nav.ts
-// ==========================================
-
-import { Icons } from "@/components/icons";
-
-export interface NavItem {
-  title: string;
-  href?: string;
-  disabled?: boolean;
-  external?: boolean;
-  icon?: keyof typeof Icons;
-  label?: string;
-}
-
-export interface NavItemWithChildren extends NavItem {
-  items: NavItemWithChildren[];
-}
-
-export interface MainNavItem extends NavItem {}
-
-export interface SidebarNavItem extends NavItem {
-  items?: SidebarNavItem[];
-  isCollapsed?: boolean;
-}
-
-export interface DocsSidebarConfig {
-  sidebar: SidebarNavItem[];
-}
-
-export interface MarketingConfig {
-  mainNav: MainNavItem[];
-}
-
-export interface DashboardConfig {
-  mainNav: MainNavItem[];
-  sidebarNav: SidebarNavItem[];
-}
-
-export type FooterItem = {
-  title: string;
-  items: {
-    title: string;
-    href: string;
-    external?: boolean;
-  }[];
-};
-
-// ==========================================
-// types/doc.ts
-// ==========================================
-
-export type DocVersion = "v1" | "v2" | "latest";
-
-export interface DocFrontmatter {
-  title: string;
-  description?: string;
-  date?: string;
-  published: boolean;
-  authors?: string[];
-  image?: string;
-  toc?: boolean;
-  radix?: boolean; // Example of specific feature flags
-}
-
-export interface Doc extends DocFrontmatter {
-  _id: string;
-  slug: string;
-  slugAsParams: string;
-  body: {
-    raw: string;
-    code: string; // MDX compiled code
-  };
-  readingTime?: {
-    text: string;
-    minutes: number;
-    time: number;
-    words: number;
-  };
-}
-
-export interface TocEntry {
-  title: string;
-  url: string;
-  depth: number;
-  items?: TocEntry[];
-}
-
-export interface BreadcrumbItem {
-  title: string;
-  href: string;
-  active?: boolean;
-}
-
-export interface PagerItem {
-  title: string;
-  href: string;
-}
-
-export interface PagerData {
-  prev: PagerItem | null;
-  next: PagerItem | null;
-}
-
-// ==========================================
-// types/google-sheets.ts
-// ==========================================
-
-export interface GoogleSheetConfig {
-  spreadsheetId: string;
-  range: string;
-  apiKey?: string;
-}
-
-// Represents a raw row from Google Sheets API
-export type RawSheetRow = string[];
-
-// Represents a row converted to a keyed object
-export type SheetRowData = Record<string, string | number | boolean | null>;
-
-// Specific domain model for a project/resource fetched from Sheets
-export interface ProjectData {
-  id: string;
-  name: string;
-  description: string;
-  status: "active" | "archived" | "beta";
-  category: string;
-  tags: string[];
-  websiteUrl?: string;
-  githubUrl?: string;
-  updatedAt: string;
-}
-
-export interface SheetError {
-  code: number;
-  message: string;
-  status: string;
-}
-
-// ==========================================
-// types/next.ts (App Router)
-// ==========================================
-
-import { Metadata } from "next";
-
-export type GenerateMetadataProps = {
-  params: Promise<Record<string, string | string[]>>;
-  searchParams: Promise<SearchParams>;
-};
-
-export type PageProps = {
-  params: Promise<Record<string, string | string[]>>;
-  searchParams: Promise<SearchParams>;
-};
-
-export type LayoutProps = {
-  children: React.ReactNode;
-  params: Promise<Record<string, string | string[]>>;
-};
-
-export type ErrorPageProps = {
-  error: Error & { digest?: string };
-  reset: () => void;
-};
-
-// ==========================================
-// types/components.ts
-// ==========================================
-
-export interface IconProps extends React.SVGProps<SVGSVGElement> {
-  size?: number | string;
-}
-
-export interface CalloutProps {
-  type?: "default" | "warning" | "danger" | "info";
-  title?: string;
-  icon?: string;
-  children?: React.ReactNode;
-}
-
-export interface CodeBlockProps {
-  language?: string;
-  filename?: string;
-  showLineNumbers?: boolean;
-  value: string;
-}
-
-export interface MdxCardProps {
-  href?: string;
-  className?: string;
-  title: string;
-  children: React.ReactNode;
-}
-
-export interface DocsPagerProps {
-  pager: PagerData;
-}
-
-export interface DocsSidebarProps {
-  items: SidebarNavItem[];
-  pathname: string | null;
-}
-
-export interface TableOfContentsProps {
-  toc: TocEntry[];
-}
-
-// ==========================================
-// types/api.ts (Server Layer)
-// ==========================================
-
-export interface ApiErrorResponse {
-  error: {
-    code: string;
-    message: string;
-    details?: unknown;
-  };
-}
-
-export interface ApiSuccessResponse<T> {
-  data: T;
-  meta?: {
-    page?: number;
-    limit?: number;
-    total?: number;
-  };
-}
-
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
-// Search specific
-export interface SearchResult {
-  id: string;
-  title: string;
-  content: string;
-  url: string;
-  type: "doc" | "project" | "blog";
-  hierarchy?: {
-    lvl0: string | null;
-    lvl1: string | null;
-    lvl2: string | null;
-  };
-}
-
-export interface SearchRequest {
-  query: string;
-  limit?: number;
-  filters?: Record<string, string>;
-}
-
-// Server Actions
-export type ServerActionState<T = unknown> = {
-  status: "idle" | "success" | "error";
-  message?: string;
-  errors?: Record<string, string[]>;
-  data?: T;
-};
-
-// Revalidation
-export interface RevalidatePayload {
-  secret: string;
-  path?: string;
-  tag?: string;
-  type: "page" | "layout";
-}
-
-=== D:\web-docs\types\nav.ts ===
-// types/nav.ts
-
-import { Icons } from "@/components/icons";
-
-export interface NavItem {
-  title: string;
-  href?: string;
-  disabled?: boolean;
-  external?: boolean;
-  icon?: keyof typeof Icons;
-  label?: string;
-}
-
-export interface NavItemWithChildren extends NavItem {
-  items: NavItemWithChildren[];
-}
-
-export interface MainNavItem extends NavItem {}
-
-export interface SidebarNavItem extends NavItem {
-  items?: SidebarNavItem[];
-  isCollapsed?: boolean;
-}
-
-export interface DocsSidebarConfig {
-  sidebar: SidebarNavItem[];
-}
-
-export interface MarketingConfig {
-  mainNav: MainNavItem[];
-}
-
-export interface DashboardConfig {
-  mainNav: MainNavItem[];
-  sidebarNav: SidebarNavItem[];
-}
-
-export type FooterItem = {
-  title: string;
-  items: {
-    title: string;
-    href: string;
-    external?: boolean;
-  }[];
-};
-
-=== D:\web-docs\types\next.ts ===
-// types/next.ts (App Router)
-
-import { Metadata } from "next";
-import { SearchParams } from "./utils";
-
-export type GenerateMetadataProps = {
-  params: Promise<Record<string, string | string[]>>;
-  searchParams: Promise<SearchParams>;
-};
-
-export type PageProps = {
-  params: Promise<Record<string, string | string[]>>;
-  searchParams: Promise<SearchParams>;
-};
-
-export type LayoutProps = {
-  children: React.ReactNode;
-  params: Promise<Record<string, string | string[]>>;
-};
-
-export type ErrorPageProps = {
-  error: Error & { digest?: string };
-  reset: () => void;
-};
-
-=== D:\web-docs\types\site.ts ===
-// types/site.ts
-
-export interface SiteConfig {
-  name: string;
-  description: string;
-  url: string;
-  ogImage: string;
-  links: {
-    twitter: string;
-    github: string;
-  };
-  author: {
-    name: string;
-    url: string;
-  };
-}
-
-export interface EnvConfig {
-  NEXT_PUBLIC_APP_URL: string;
-  GOOGLE_SHEETS_API_KEY?: string;
-  GOOGLE_SHEETS_ID?: string;
-  GOOGLE_SERVICE_ACCOUNT_EMAIL?: string;
-  GOOGLE_PRIVATE_KEY?: string;
-  NODE_ENV: 'development' | 'production' | 'test';
-}
-
-=== D:\web-docs\types\utils.ts ===
-// types/utils.ts
-
-export type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
-
-export type Nullable<T> = T | null;
-export type Optional<T> = T | undefined;
-export type Maybe<T> = T | null | undefined;
-
-export type Dict<T = unknown> = Record<string, T>;
-
-export type AsyncResult<T, E = Error> = 
-  | { success: true; data: T; error?: never }
-  | { success: false; data?: never; error: E };
-
-export type SearchParams = { [key: string]: string | string[] | undefined };
-
-

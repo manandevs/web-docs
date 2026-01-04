@@ -6,7 +6,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-import Header from "@/components/Header";
+import Header from "@/components/layouts/Header";
 import Layout from "@/components/layouts/Layout";
 import NextThemeProvider from "@/components/providers";
 
