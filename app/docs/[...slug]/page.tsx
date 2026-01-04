@@ -36,17 +36,15 @@ export default async function DocPage({ params }: PageProps) {
         <h1 className="relative text-5xl md:text-6xl font-it-weralionis tracking-tight text-white mb-6">
           {content.title}
         </h1>
-        <p className="text-xl text-zinc-400 leading-relaxed max-w-2xl font-light">
+        <p className="text-xl text-zinc-400 leading-relaxed max-w-7xl font-light">
           {content.description}
         </p>
       </div>
 
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12" />
-      {/* 2. Key Takeaways (Styled like the Hero Cards) */}
+      <div className="h-px w-full bg-linear-to-r from-transparent via-white/10 to-transparent mb-12" />
       <div className="grid gap-8 mb-12">
         <div className="group relative p-6 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/4 transition-colors overflow-hidden">
-          {/* Subtle gradient border effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />          
+          <div className="absolute inset-0 bg-linear-to-br from-red-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />          
           <h3 className="relative text-lg font-it-weralionis text-white mb-4 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
             Core Concepts
@@ -63,7 +61,6 @@ export default async function DocPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* 3. Code Block (Terminal Style) */}
       {content.code && (
         <div className="mb-12">
            <div className="flex items-center justify-between px-1 mb-3">
@@ -74,28 +71,24 @@ export default async function DocPage({ params }: PageProps) {
           </div>
 
           <div className="relative rounded-xl border border-white/10 bg-[#050505] shadow-2xl overflow-hidden group">
-            {/* Window Controls */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/2">
               <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
               <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
               <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
               <div className="ml-auto text-[10px] text-zinc-600 font-mono">bash / html</div>
             </div>
 
-            {/* The Code */}
             <div className="p-6 overflow-x-auto">
               <pre className="font-mono text-sm leading-7 text-zinc-300">
                 <code>{content.code}</code>
               </pre>
             </div>
 
-            {/* Hover Effects */}
             <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/5 pointer-events-none" />
           </div>
         </div>
       )}
 
-      {/* 4. Footer Navigation */}
       <div className="flex justify-between items-center pt-10 border-t border-white/5">
         <Button variant="ghost" className="text-zinc-500 hover:text-white hover:bg-white/5">
           &larr; Previous
