@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronRight, FileCode, Palette } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";

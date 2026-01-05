@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ChevronRight, Terminal, Copy, Check } from "lucide-react";
+import { ChevronRight, Terminal, Check } from "lucide-react";
 import { docsData } from "@/lib/docs";
 import { Button } from "@/components/ui/button";
 
@@ -50,15 +50,14 @@ export default async function DocPage({ params }: PageProps) {
             Core Concepts
           </h3>
           
-          {/* <ul className="relative space-y-3">
+          <ul className="relative space-y-3">
             {content.points.map((point, i) => (
               <li key={i} className="flex items-start gap-3 text-zinc-400">
                  <Check className="w-5 h-5 text-zinc-600 shrink-0 mt-0.5" />
                  <span className="text-sm md:text-base leading-relaxed">{point}</span>
               </li>
             ))}
-          </ul> */}
-        </div>
+          </ul>        </div>
       </div>
 
       {content.code && (

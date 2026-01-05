@@ -3,14 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Github,
-  Twitter,
-  MessageSquare,
   Settings,
   LogOut,
-  HelpCircle,
   User,
-  CreditCard,
   Sparkles,
   ChevronsUpDown,
   UserCircle
